@@ -1,0 +1,28 @@
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+
+name: build
+
+jobs:
+  build:
+    name: Build Package
+    runs-on: ubuntu-latest
+    container: archlinux:latest    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: build
+        run: |
+          pacman -Syu base-devel git --noconfirm --overwrite '*'
+          sed -i '/E_ROOT/d' /usr/bin/makepkg
+          /usr/bin/makepkg  -sf --noconfirm
+          mv -v  *.zst sshd-passwd-pot.zst
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: aws-dyndns
+          path: "*.zst"
