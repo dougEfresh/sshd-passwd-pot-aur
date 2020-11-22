@@ -1,0 +1,12 @@
+[Unit]
+Description=OpenSSH HoneyPOT
+After=network.target
+
+[Service]
+ExecStart=/opt/sshd-passwd-pot/sbin/sshd -D -o Audit=yes
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
